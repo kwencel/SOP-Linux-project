@@ -8,7 +8,7 @@ private:
     off_t position = 0;
 
 public:
-    off_t seek(off_t offset, int whence, int fd);
+    off_t seek(off_t offset, int whence, int fd = -1);
 };
 
 

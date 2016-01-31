@@ -6,11 +6,6 @@ using namespace std;
 
 int main() {
 
-//    SeekableFile plik;
-//    plik.openFile("TextFile.txt", 01);
-//    plik.writeBytes("d");
-//    plik.closeFile();
-
     SequentialFile sequentialFile;
     SeekableFile seekableFile;
 
@@ -31,40 +26,48 @@ int main() {
                     cout << "1: Sequential access" << endl;
                     cout << "2: Direct access" << endl;
                     cout << "b: Go back to previous menu" << endl;
+                    cout << "q: Quit" << endl;
                     cin >> input;
-                    switch (input) {
-                        case '1': {
-                            bool goback = false;
-                            while (!goback) {
-                                cout << endl;
-                                cout << "1: Create file" << endl;
-                                cout << "2: Open file" << endl;
-                                cout << "3: Close file" << endl;
-                                cout << "4: Read from file" << endl;
-                                cout << "5: Write to file" << endl;
-                                cout << "b: Go back to previous menu" << endl;
-                                cin >> input;
-                                switch (input) {
-                                    case '1': {
-                                        cout << endl;
-                                        cout << "Please enter the path to new file: " << endl;
-                                        string filepath;
-                                        cin >> filepath;
-                                        sequentialFile.createFile(filepath.c_str());
-                                        break;
-                                    }
-                                    case '2': {
-                                        cout << endl;
-                                        cout << "Please enter the path to file: " << endl;
-                                        string filepath;
-                                        cin >> filepath;
+                    if (input == '1' or input == '2') {
+                        bool goback = false;
+                        bool seekable = (bool) (input - '0' - 1);
+                        SequentialFile* fileClassPtr = &sequentialFile;
+                        while (!goback) {
+                            cout << endl;
+                            cout << "1: Create file" << endl;
+                            cout << "2: Open file" << endl;
+                            cout << "3: Close file" << endl;
+                            cout << "4: Read from file" << endl;
+                            cout << "5: Write to file" << endl;
+                            if (seekable) {
+                                cout << "6: Seek file" << endl;
+                                fileClassPtr = &seekableFile;
+                            }
+                            cout << "b: Go back to previous menu" << endl;
+                            cout << "q: Quit" << endl;
+                            cin >> input;
+                            switch (input) {
+                                case '1': {
+                                    cout << endl;
+                                    cout << "Please enter the path to new file: " << endl;
+                                    string filepath;
+                                    cin >> filepath;
+                                    fileClassPtr->createFile(filepath.c_str());
+                                    break;
+                                }
+                                case '2': {
+                                    cout << endl;
+                                    cout << "Please enter the path to file: " << endl;
+                                    string filepath;
+                                    cin >> filepath;
+                                    int mode = -1;
+                                    while (mode == -1) {
                                         cout << endl;
                                         cout << "File Access mode: " << endl;
                                         cout << "1: Read-only " << endl;
                                         cout << "2: Write-only: " << endl;
                                         cout << "3: Read and write: " << endl;
                                         cin >> input;
-                                        int mode;
                                         switch (input) {
                                             case '1':
                                                 mode = 00;
@@ -76,50 +79,86 @@ int main() {
                                                 mode = 02;
                                                 break;
                                         }
-                                        sequentialFile.openFile(filepath.c_str(), mode);
+                                    }
+                                    fileClassPtr->openFile(filepath.c_str(), mode);
+                                    break;
+                                }
+                                case '3': {
+                                    fileClassPtr->closeFile();
+                                    break;
+                                }
+                                case '4': {
+                                    if (!fileClassPtr->hasValidDescriptor()) {
+                                        cerr << "Open the file first!" << endl;
                                         break;
                                     }
-                                    case '3': {
-                                        sequentialFile.closeFile();
+                                    cout << endl;
+                                    cout << "Please enter the number of bytes you want to read from file:" << endl;
+                                    size_t bytes;
+                                    cin >> bytes;
+                                    fileClassPtr->readBytes(bytes);
+                                    break;
+                                }
+                                case '5': {
+                                    if (!fileClassPtr->hasValidDescriptor()) {
+                                        cerr << "Open the file first!" << endl;
                                         break;
                                     }
-                                    case '4': {
-                                        if (!sequentialFile.hasValidDescriptor()) {
-                                            cerr << "Open the file first!" << endl;
-                                            break;
-                                        }
+                                    cout << endl;
+                                    cout << "Please enter the text you want to write to file:" << endl;
+                                    string text;
+                                    cin.ignore();
+                                    getline(cin, text);
+                                    fileClassPtr->writeText(text);
+                                    break;
+                                }
+                                case '6': {
+                                    if (seekable) {
                                         cout << endl;
-                                        cout << "Please enter the number of bytes you want to read from file:" << endl;
-                                        size_t bytes;
-                                        cin >> bytes;
-                                        sequentialFile.readBytes(bytes);
-                                        break;
-                                    }
-                                    case '5': {
-                                        if (!sequentialFile.hasValidDescriptor()) {
-                                            cerr << "Open the file first!" << endl;
-                                            break;
+                                        cout << "Please enter reference point in the file to move the offset pointer" <<
+                                        endl;
+                                        cout << "1: Beginning of file (SEEK_SET)" << endl;
+                                        cout << "2: Current position (SEEK_CUR)" << endl;
+                                        cout << "3: End of file (SEEK_END)" << endl;
+                                        int whence;
+                                        cin >> input;
+                                        switch (input) {
+                                            case '1': {
+                                                whence = SEEK_SET;
+                                                break;
+                                            }
+                                            case '2': {
+                                                whence = SEEK_CUR;
+                                                break;
+                                            }
+                                            case '3': {
+                                                whence = SEEK_END;
+                                                break;
+                                            }
                                         }
-                                        cout << endl;
-                                        cout << "Please enter the text you want to write to file:" << endl;
-                                        string text;
-                                        cin.ignore();
-                                        getline(cin, text);
-                                        sequentialFile.writeText(text);
-                                        break;
+                                        cout << "Please enter the offset you want to move from the reference point" <<
+                                        endl;
+                                        off_t offset;
+                                        cin >> offset;
+                                        seekableFile.seek(offset, whence);
                                     }
-                                    case 'b': {
-                                        goback = true;
-                                        break;
-                                    }
+                                    break;
+                                }
+                                case 'b': {
+                                    goback = true;
+                                    break;
+                                }
+                                case 'q': {
+                                    exit(0);
                                 }
                             }
-                            break;
                         }
-                        case 'b': {
-                            goback = true;
-                            break;
-                        }
+                    }
+                    else if (input == 'b') {
+                        goback = true;
+                    }
+                    else if (input == 'q') {
+                        exit(0);
                     }
                 }
                 break;
