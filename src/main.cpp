@@ -1,6 +1,7 @@
 #include <iostream>
 #include "SequentialFile.h"
 #include "SeekableFile.h"
+#include "Process.h"
 
 using namespace std;
 
@@ -8,8 +9,10 @@ int main() {
 
     SequentialFile sequentialFile;
     SeekableFile seekableFile;
+    Process process;
 
     char input;
+    bool goback = false;
 
     while (true) {
         cout << endl;
@@ -20,7 +23,6 @@ int main() {
         cin >> input;
         switch (input) {
             case '1': {
-                bool goback = false;
                 while (!goback) {
                     cout << endl;
                     cout << "1: Sequential access" << endl;
@@ -162,6 +164,26 @@ int main() {
                     }
                 }
                 break;
+            }
+            case '2': { // PROCESS OPERATIONS
+                goback = false;
+                while (!goback) {
+                    cout << "1: Attach to process" << endl;
+                    cout << "2: Send signal to process" << endl;
+                    cout << "3: Change process priority" << endl;
+                    cout << "4: Wait for process" << endl;
+                    cout << "b: Go back to previous menu" << endl;
+                    cout << "q: Quit" << endl;
+                    cin >> input;
+                    switch (input) {
+                        case '1': {
+                            pid_t pid;
+                            cout << "Please enter PID of the process you want to attach to:" << endl;
+                            cin >> pid;
+                            process.attach(pid);
+                        }
+                    }
+                }
             }
             case 'q': {
                 exit(0);
