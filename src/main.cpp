@@ -169,21 +169,108 @@ int main() {
                 goback = false;
                 while (!goback) {
                     cout << "1: Attach to process" << endl;
-                    cout << "2: Send signal to process" << endl;
-                    cout << "3: Change process priority" << endl;
-                    cout << "4: Wait for process" << endl;
+                    cout << "2: Create a child process" << endl;
+                    cout << "3: Send signal to process" << endl;
+                    cout << "4: Change process priority" << endl;
+                    cout << "5: Wait for process" << endl;
+                    cout << "6: List all your running processes" << endl;
                     cout << "b: Go back to previous menu" << endl;
                     cout << "q: Quit" << endl;
                     cin >> input;
                     switch (input) {
                         case '1': {
-                            pid_t pid;
                             cout << "Please enter PID of the process you want to attach to:" << endl;
+                            pid_t pid;
                             cin >> pid;
                             process.attach(pid);
+                            break;
+                        }
+                        case '2': {
+                            cout << "Please enter the name or a full path to executable to run:" << endl;
+                            string command;
+                            cin.ignore();
+                            getline(cin, command);
+                            process.runExecutable(command);
+                            break;
+                        }
+                        case '3': {
+                            if (!process.verifyPid()) {
+                                cerr << "Please attach a process first!" << endl;
+                                break;
+                            }
+                            cout << " 1: SIGHUP\t 2: SIGINT\t 3: SIGQUIT\t 4: SIGILL" << endl;
+                            cout << " 6: SIGABRT\t 8: SIGFPE\t 9: SIGKILL\t11: SIGSEGV" << endl;
+                            cout << "13: SIGPIPE\t14: SIGALRM\t15: SIGTERM\t16: SIGUSR1" << endl;
+                            cout << "17: SIGUSR2\t18: SIGCHLD\t25: SIGCONT\t23: SIGSTOP" << endl;
+                            cout << "24: SIGTSTP\t26: SIGTTIN\t27: SIGTTOU" << endl;
+                            int signal = -1;
+                            cin >> signal;
+                            switch (signal) {
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 6:
+                                case 8:
+                                case 9:
+                                case 11:
+                                case 13:
+                                case 14:
+                                case 15:
+                                case 16:
+                                case 17:
+                                case 18:
+                                case 25:
+                                case 23:
+                                case 24:
+                                case 26:
+                                case 27: {
+                                    process.sendSignal(signal);
+                                    break;
+                                }
+                                default: {
+                                    cerr << "Please enter the valid signal number!" << endl;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        case '4': {
+                            if (!process.verifyPid()) {
+                                cerr << "Please attach a process first!" << endl;
+                                break;
+                            }
+                            cout << "Please enter the priority (integer number between [-20,19])" << endl;
+                            cout << "You can only lower priority of your process unless you are superuser" << endl;
+                            int priority;
+                            cin >> priority;
+                            process.changePriority(priority);
+                            break;
+                        }
+                        case '5': {
+                            if (!process.verifyPid()) {
+                                cerr << "Please attach a process first!" << endl;
+                                break;
+                            }
+                            int retval = process.waitFor();
+                            cout << "Value returned by the process was: " << retval << endl;
+                            break;
+                        }
+                        case '6': {
+                            process.listProcesses();
+                            cout << endl;
+                            break;
+                        }
+                        case 'b': {
+                            goback = true;
+                            break;
+                        }
+                        case 'q': {
+                            exit(0);
                         }
                     }
                 }
+                break;
             }
             case 'q': {
                 exit(0);
