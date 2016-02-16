@@ -16,6 +16,9 @@ string SequentialFile::getFileName(string path) {
 int SequentialFile::openFile(const char* path, int flag) {
     int fd = open(path, flag);
     if (fd != -1) {
+        if (descriptor != -1) {
+            close(descriptor);
+        }
         descriptor = fd;
         access = flag;
         filepath = path;
@@ -33,10 +36,6 @@ int SequentialFile::openFile(const char* path, int flag) {
 int SequentialFile::closeFile(int fd) {
     if (fd == -1) {
         fd = descriptor;
-//        if (fd == -1) {
-//            cerr << "Open the file first!" << endl;
-//            return 1;
-//        }
     }
     if (close(fd) == 0) {
         cout << "File closed successfully." << endl;
@@ -51,19 +50,16 @@ int SequentialFile::closeFile(int fd) {
 }
 
 int SequentialFile::createFile(const char* path, mode_t mode) {
-    mkfifo(path, mode);
-    return 0;
+    return mkfifo(path, mode);
 }
 
 int SequentialFile::readBytes(size_t count, int fd, char* buffer) {
     if (fd == -1) {
         fd = descriptor;
-//        if (fd == -1) {
-//            cerr << "Open the file first!" << endl;
-//            return 1;
-//        }
     }
-    if (buffer == nullptr) { buffer = this->buffer; }
+    if (buffer == nullptr) {
+        buffer = this->buffer;
+    }
 
     ssize_t read_bytes = read(fd, buffer, count);
     if (read_bytes == -1) {
@@ -84,10 +80,6 @@ int SequentialFile::readBytes(size_t count, int fd, char* buffer) {
 int SequentialFile::writeText(string text, int fd) {
     if (fd == -1) {
         fd = descriptor;
-//        if (fd == -1) {
-//            cerr << "Open the file first!" << endl;
-//            return 1;
-//        }
     }
     ssize_t written_bytes = write(fd, text.c_str(), text.length());
     if (written_bytes == -1) {
@@ -99,5 +91,23 @@ int SequentialFile::writeText(string text, int fd) {
 }
 
 bool SequentialFile::hasValidDescriptor() {
-    return (descriptor != -1);
+    return (descriptor != -1 && verifyFile());
+}
+
+int SequentialFile::deleteFile(const char* path) {
+    if (unlink(path) == -1) {
+        perror("Can't delete file");
+    }
+}
+
+bool SequentialFile::verifyFile(char* filename) {
+    struct stat buffer;
+    if (stat(filename, &buffer) != -1) {
+        return true;
+    }
+    return false;
+}
+
+bool SequentialFile::verifyFile() {
+    return verifyFile((char*) filepath.c_str());
 }

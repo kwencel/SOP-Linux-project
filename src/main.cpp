@@ -37,12 +37,13 @@ int main() {
                         while (!goback) {
                             cout << endl;
                             cout << "1: Create file" << endl;
-                            cout << "2: Open file" << endl;
-                            cout << "3: Close file" << endl;
-                            cout << "4: Read from file" << endl;
-                            cout << "5: Write to file" << endl;
+                            cout << "2: Delete file" << endl;
+                            cout << "3: Open file" << endl;
+                            cout << "4: Close file" << endl;
+                            cout << "5: Read from file" << endl;
+                            cout << "6: Write to file" << endl;
                             if (seekable) {
-                                cout << "6: Seek file" << endl;
+                                cout << "7: Seek file" << endl;
                                 fileClassPtr = &seekableFile;
                             }
                             cout << "b: Go back to previous menu" << endl;
@@ -58,6 +59,14 @@ int main() {
                                     break;
                                 }
                                 case '2': {
+                                    cout << endl;
+                                    cout << "Please enter the path to file you want to delete: " << endl;
+                                    string filepath;
+                                    cin >> filepath;
+                                    fileClassPtr->deleteFile(filepath.c_str());
+                                    break;
+                                }
+                                case '3': {
                                     cout << endl;
                                     cout << "Please enter the path to file: " << endl;
                                     string filepath;
@@ -85,11 +94,11 @@ int main() {
                                     fileClassPtr->openFile(filepath.c_str(), mode);
                                     break;
                                 }
-                                case '3': {
+                                case '4': {
                                     fileClassPtr->closeFile();
                                     break;
                                 }
-                                case '4': {
+                                case '5': {
                                     if (!fileClassPtr->hasValidDescriptor()) {
                                         cerr << "Open the file first!" << endl;
                                         break;
@@ -101,7 +110,7 @@ int main() {
                                     fileClassPtr->readBytes(bytes);
                                     break;
                                 }
-                                case '5': {
+                                case '6': {
                                     if (!fileClassPtr->hasValidDescriptor()) {
                                         cerr << "Open the file first!" << endl;
                                         break;
@@ -114,7 +123,7 @@ int main() {
                                     fileClassPtr->writeText(text);
                                     break;
                                 }
-                                case '6': {
+                                case '7': {
                                     if (seekable) {
                                         cout << endl;
                                         cout << "Please enter reference point in the file to move the offset pointer" << endl;
@@ -137,8 +146,7 @@ int main() {
                                                 break;
                                             }
                                         }
-                                        cout << "Please enter the offset you want to move from the reference point" <<
-                                        endl;
+                                        cout << "Please enter the offset you want to move from the reference point" << endl;
                                         off_t offset;
                                         cin >> offset;
                                         seekableFile.seek(offset, whence);

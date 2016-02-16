@@ -15,7 +15,12 @@ protected:
 
 public:
     int openFile(const char* path, int flag = 00);  // O_RDONLY
+
     int closeFile(int fd = -1);
+
+    bool verifyFile(char* filename);
+
+    bool verifyFile();
 
     virtual int createFile(const char* path, mode_t mode = 0600);
 
@@ -24,6 +29,8 @@ public:
     int writeText(string text, int fd = -1);
 
     bool hasValidDescriptor();
+
+    int deleteFile(const char* path);
 };
 
 
