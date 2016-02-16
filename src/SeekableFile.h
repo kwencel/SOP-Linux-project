@@ -9,6 +9,7 @@ private:
 
 public:
     off_t seek(off_t offset, int whence, int fd = -1);
+    int createFile(const char* path, mode_t mode = 0600);
 };
 
 

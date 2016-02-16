@@ -17,7 +17,7 @@ public:
     int openFile(const char* path, int flag = 00);  // O_RDONLY
     int closeFile(int fd = -1);
 
-    int createFile(const char* path, mode_t mode = 600);
+    virtual int createFile(const char* path, mode_t mode = 0600);
 
     int readBytes(size_t count, int fd = -1, char* buffer = nullptr);
 

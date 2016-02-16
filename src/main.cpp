@@ -117,8 +117,7 @@ int main() {
                                 case '6': {
                                     if (seekable) {
                                         cout << endl;
-                                        cout << "Please enter reference point in the file to move the offset pointer" <<
-                                        endl;
+                                        cout << "Please enter reference point in the file to move the offset pointer" << endl;
                                         cout << "1: Beginning of file (SEEK_SET)" << endl;
                                         cout << "2: Current position (SEEK_CUR)" << endl;
                                         cout << "3: End of file (SEEK_END)" << endl;
@@ -168,17 +167,39 @@ int main() {
             case '2': { // PROCESS OPERATIONS
                 goback = false;
                 while (!goback) {
+                    cout << endl;
                     cout << "1: Attach to process" << endl;
                     cout << "2: Create a child process" << endl;
                     cout << "3: Send signal to process" << endl;
                     cout << "4: Change process priority" << endl;
                     cout << "5: Wait for process" << endl;
                     cout << "6: List all your running processes" << endl;
+                    cout << "7: Show PID of currently assigned process" << endl;
                     cout << "b: Go back to previous menu" << endl;
                     cout << "q: Quit" << endl;
                     cin >> input;
                     switch (input) {
                         case '1': {
+                            if (process.isChild() && process.verifyPid() && !process.isZombie()) {
+                                RETRY1:
+                                cout << endl;
+                                cout << "Your previous child process needs to end before proceeding." << endl;
+                                cout << "Do you want to end it now?" << endl;
+                                cout << "1: No action" << endl;
+                                cout << "2: Send SIGTERM" << endl;
+                                cout << "3: Send SIGKILL" << endl;
+                                cin >> input;
+                                if (input == '1') {
+                                    break;
+                                } else if (input == '2') {
+                                    process.sendSignal(15);
+                                } else if (input == '3') {
+                                    process.sendSignal(9);
+                                } else {
+                                    goto RETRY1;
+                                }
+                            }
+                            cout << endl;
                             cout << "Please enter PID of the process you want to attach to:" << endl;
                             pid_t pid;
                             cin >> pid;
@@ -186,6 +207,27 @@ int main() {
                             break;
                         }
                         case '2': {
+                            if (process.isChild() && process.verifyPid() && !process.isZombie()) {
+                                RETRY2:
+                                cout << endl;
+                                cout << "Your previous child process needs to end before proceeding." << endl;
+                                cout << "Do you want to end it now?" << endl;
+                                cout << "1: No action" << endl;
+                                cout << "2: Send SIGTERM" << endl;
+                                cout << "3: Send SIGKILL" << endl;
+                                cin >> input;
+                                cin.clear();
+                                if (input == '1') {
+                                    break;
+                                } else if (input == '2') {
+                                    process.sendSignal(15);
+                                } else if (input == '3') {
+                                    process.sendSignal(9);
+                                } else {
+                                    goto RETRY2;
+                                }
+                            }
+                            cout << endl;
                             cout << "Please enter the name or a full path to executable to run:" << endl;
                             string command;
                             cin.ignore();
@@ -198,6 +240,7 @@ int main() {
                                 cerr << "Please attach a process first!" << endl;
                                 break;
                             }
+                            cout << endl;
                             cout << " 1: SIGHUP\t 2: SIGINT\t 3: SIGQUIT\t 4: SIGILL" << endl;
                             cout << " 6: SIGABRT\t 8: SIGFPE\t 9: SIGKILL\t11: SIGSEGV" << endl;
                             cout << "13: SIGPIPE\t14: SIGALRM\t15: SIGTERM\t16: SIGUSR1" << endl;
@@ -240,8 +283,9 @@ int main() {
                                 cerr << "Please attach a process first!" << endl;
                                 break;
                             }
+                            cout << endl;
                             cout << "Please enter the priority (integer number between [-20,19])" << endl;
-                            cout << "You can only lower priority of your process unless you are superuser" << endl;
+                            cout << "You can only lower priority of your processes unless you are superuser" << endl;
                             int priority;
                             cin >> priority;
                             process.changePriority(priority);
@@ -257,8 +301,24 @@ int main() {
                             break;
                         }
                         case '6': {
+                            cout << endl;
                             process.listProcesses();
                             cout << endl;
+                            break;
+                        }
+                        case '7': {
+                            pid_t pid = process.getPid();
+                            if (pid == -1) {
+                                cout << "No process assigned." << endl;
+                            } else {
+                                cout << "Currently assigned to process with PID " << pid;
+                                if (!process.verifyPid()) {
+                                    cout << " (dead)";
+                                } else if (process.isZombie()) {
+                                    cout <<" (zombie)";
+                                }
+                                cout << endl;
+                            }
                             break;
                         }
                         case 'b': {

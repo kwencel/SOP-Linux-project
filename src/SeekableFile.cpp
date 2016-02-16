@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <iostream>
+#include <fcntl.h>
 #include "SeekableFile.h"
 
 off_t SeekableFile::seek(off_t offset, int whence, int fd) {
@@ -20,4 +21,8 @@ off_t SeekableFile::seek(off_t offset, int whence, int fd) {
     }
     cout << "Current offset: " << position << endl;
     return tmp_position;
+}
+
+int SeekableFile::createFile(const char* path, mode_t mode) {
+    return creat(path, mode);
 }

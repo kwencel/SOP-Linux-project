@@ -36,9 +36,17 @@ public:
 
     bool verifyPid(pid_t pid);
 
+    bool isZombie();
+
+    bool isZombie(pid_t pid);
+
+    bool isChild();
+
     void runExecutable(string command);
 
     void listProcesses();
+
+    pid_t getPid();
 };
 
 

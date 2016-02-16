@@ -8,6 +8,9 @@
 #include <string.h>
 
 int Process::attach(pid_t pid) {
+    if (isZombie()) {
+        waitpid(this->pid, NULL, NULL);
+    }
     stringstream psCommand;
     psCommand << "ps -p " << to_string(pid);
     int retval = getCommandReturnCode(psCommand.str(), true);
@@ -17,7 +20,7 @@ int Process::attach(pid_t pid) {
         psCommand.str("");
         psCommand << "ps -p " << pid << " -o user=";
         string pidOwner = getCommandOutput(psCommand.str());
-        if (whoami.compare(pidOwner) != 0) {
+        if (!((whoami.compare("root") == 0) || (whoami.compare(pidOwner) == 0))) {
             cerr << "You can't manipulate processes that belong to " << pidOwner << "!" << endl;
             return 1;
         }
@@ -38,6 +41,7 @@ int Process::waitFor() {
     if (!hasChild) {
         cerr << "You can't wait for a process that is not a child of yours." << endl;
         cerr << "Please use the option 'Create a child process' first." << endl;
+        return -1;
     }
     int retval;
     waitpid(pid, &retval, NULL);
@@ -49,6 +53,9 @@ int Process::changePriority(int priority) {
 }
 
 void Process::runExecutable(string command) {
+    if (isZombie()) {
+        waitpid(pid, NULL, NULL);
+    }
     freeMemoryForArguments();
     argv = filterArguments(command, ' ');
     hasChild = true;
@@ -56,12 +63,14 @@ void Process::runExecutable(string command) {
     if (pid == 0) {
         execvp(argv[0], argv.data());
         perror("Can't run the executable");
+        exit(-1);
     }
 }
 
 int Process::getCommandReturnCode(string command, bool hideOutput) {
     int retval;
-    if (fork() == 0) {
+    int pid = fork();
+    if (pid == 0) {
         if (hideOutput) {
             int devnull = open("/dev/null", O_WRONLY);
             dup2(devnull, 1);
@@ -71,8 +80,9 @@ int Process::getCommandReturnCode(string command, bool hideOutput) {
         vector<char*> argv = filterArguments(command, ' ');
         execvp(argv[0], argv.data());
         perror("Can't run the process and capture the output");
+        exit(-1);
     } else {
-        wait(&retval);
+        waitpid(pid, &retval, NULL);
     }
     return WEXITSTATUS(retval);
 }
@@ -84,6 +94,7 @@ string Process::getCommandOutput(string command) {
     }
     char buffer[1024];
     fscanf(fp, "%s\n", &buffer);
+    pclose(fp);
     return string(buffer);
 }
 
@@ -132,16 +143,41 @@ bool Process::verifyPid(pid_t pid) {
     int retval = getCommandReturnCode(psCommand.str(), true);
     if (retval == 0) {
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 void Process::listProcesses() {
     char* argv[4] = {(char*) "ps", (char*) "-fu", (char*) getCommandOutput("whoami").c_str(), NULL};
-    if (fork() == 0) {
+    int pid = fork();
+    if (pid == 0) {
         execvp(argv[0], argv);
     } else {
-        wait(NULL);
+        waitpid(pid, NULL, NULL);
     }
+}
+
+bool Process::isChild() {
+    return hasChild;
+}
+
+bool Process::isZombie(pid_t pid) {
+    if (pid == -1) {
+        return false;
+    }
+    stringstream ss;
+    ss << "ps -p " << pid << " -o stat=";
+    string state = getCommandOutput(ss.str());
+    if (state[0] == 'Z') {
+        return true;
+    }
+    return false;
+}
+
+bool Process::isZombie() {
+    return isZombie(pid);
+}
+
+pid_t Process::getPid() {
+    return pid;
 }
