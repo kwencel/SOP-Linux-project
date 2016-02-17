@@ -6,14 +6,16 @@
 #include <sys/msg.h>
 #include <string>
 
+struct msgbuf_mod {
+    long mtype;
+    char mtext[128];
+};
+
 using namespace std;
 
 class MessageQueue {
 private:
-    struct msgbuf_mod {
-        long mtype;
-        char mtext[128];
-    } buf;
+    msgbuf_mod buf;
     int id = -1;
 
 public:

@@ -31,9 +31,9 @@ int Semaphore::remove() {
         perror("Can't remove semaphore set");
         return -1;
     }
+    cout << "Successfully removed a semaphore set with ID " << id << endl;
     id = -1;
     nsems = -1;
-    cout << "Successfully removed a semaphore set with ID " << id << endl;
     return 0;
 }
 

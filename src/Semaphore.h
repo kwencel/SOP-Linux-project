@@ -5,12 +5,11 @@
 #include <sys/types.h>
 #include <sys/sem.h>
 
-static struct sembuf buf;
-
 class Semaphore {
 private:
     int id = -1;
     int nsems = -1;
+    struct sembuf buf;
 
 public:
     int create(int amount , int flags = 0600 | IPC_CREAT, key_t key = IPC_PRIVATE);
