@@ -4,6 +4,7 @@
 #include "Process.h"
 #include "SharedMemory.h"
 #include "Semaphore.h"
+#include "MessageQueue.h"
 
 using namespace std;
 
@@ -14,6 +15,7 @@ int main() {
     Process process;
     SharedMemory sharedMemory;
     Semaphore semaphore;
+    MessageQueue messageQueue;
 
     char input;
     bool goback = false;
@@ -517,7 +519,83 @@ int main() {
                             break;
                         }
                         case '3': {
-
+                            bool goback = false;
+                            while (!goback) {
+                                cout << endl;
+                                cout << "1: Create a message queue" << endl;
+                                cout << "2: Attach a previously created message queue" << endl;
+                                cout << "3: Remove a message queue" << endl;
+                                cout << "4: Receive a message" << endl;
+                                cout << "5: Send a message" << endl;
+                                cout << "6: Get ID of the message queue" << endl;
+                                cout << "b: Go back to previous menu" << endl;
+                                cout << "q: Quit" << endl;
+                                cin >> input;
+                                switch (input) {
+                                    case '1': {
+                                        cout << endl;
+                                        messageQueue.create();
+                                        break;
+                                    }
+                                    case '2': {
+                                        cout << endl;
+                                        cout << "Please enter the ID of the message queue you want to attach:" << endl;
+                                        int id;
+                                        cin >> id;
+                                        messageQueue.attach(id);
+                                        break;
+                                    }
+                                    case '3': {
+                                        cout << endl;
+                                        messageQueue.remove();
+                                        break;
+                                    }
+                                    case '4': {
+                                        cout << endl;
+                                        if (messageQueue.getID() == -1) {
+                                            cerr << "Create or attach a message queue first!" << endl;
+                                            break;
+                                        }
+                                        cout << "Please enter the message type (integer value >0):" << endl;
+                                        long type;
+                                        cin >> type;
+                                        messageQueue.receive(type);
+                                        break;
+                                    }
+                                    case '5': {
+                                        cout << endl;
+                                        if (messageQueue.getID() == -1) {
+                                            cerr << "Create or attach a message queue first!" << endl;
+                                            break;
+                                        }
+                                        cout << "Please enter the message type (integer value >0):" << endl;
+                                        long type;
+                                        cin >> type;
+                                        cout << "Please enter the message to send via the message queue:" << endl;
+                                        string text;
+                                        cin.ignore();
+                                        getline(cin, text);
+                                        messageQueue.send(text, type);
+                                        break;
+                                    }
+                                    case '6': {
+                                        int id = messageQueue.getID();
+                                        if (id == -1) {
+                                            cerr << "Create or attach a message queue first!" << endl;
+                                            break;
+                                        }
+                                        cout << "Message queue ID: " << id << endl;
+                                        break;
+                                    }
+                                    case 'b': {
+                                        goback = true;
+                                        break;
+                                    }
+                                    case 'q': {
+                                        exit(0);
+                                    }
+                                }
+                            }
                             break;
                         }
                         case 'b': {
