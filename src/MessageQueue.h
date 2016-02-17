@@ -4,14 +4,14 @@
 #include <sys/ipc.h>
 #include <sys/types.h>
 #include <sys/msg.h>
-#include <string>
+#include <iostream>
+
+using namespace std;
 
 struct msgbuf_mod {
     long mtype;
     char mtext[128];
 };
-
-using namespace std;
 
 class MessageQueue {
 private:
@@ -20,10 +20,15 @@ private:
 
 public:
     int create(int flags = 0600 | IPC_CREAT, key_t key = IPC_PRIVATE);
+
     int attach(int id);
+
     int remove();
+
     int send(string text, long type);
+
     int receive(long type);
+
     int getID();
 };
 

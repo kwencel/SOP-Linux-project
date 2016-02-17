@@ -12,7 +12,7 @@ using namespace std;
 class Segment {
 public:
     int id = -1;
-    size_t size = -1;
+    size_t size = 0;
     char* ptr = nullptr;
     bool operator==(const Segment& other) { return this->id == other.id; }
 
@@ -28,11 +28,17 @@ private:
 
 public:
     int create(size_t size, int flags = 0600 | IPC_CREAT, key_t key = IPC_PRIVATE);
+
     char* attach();
+
     int detach();
+
     int remove();
+
     int read();
+
     int write(string text);
+
     void viewSegmentList();
 };
 

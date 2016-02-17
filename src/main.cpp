@@ -28,7 +28,7 @@ int main() {
         cout << "q: Quit" << endl;
         cin >> input;
         switch (input) {
-            case '1': {
+            case '1': { // FILE OPERATIONS
                 while (!goback) {
                     cout << endl;
                     cout << "1: Sequential access" << endl;

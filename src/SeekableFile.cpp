@@ -6,10 +6,6 @@
 off_t SeekableFile::seek(off_t offset, int whence, int fd) {
     if (fd == -1) {
         fd = descriptor;
-//        if (fd == -1) {
-//            cerr << "Open the file first!" << endl;
-//            return 1;
-//        }
     }
     off_t tmp_position = lseek(fd, offset, whence);
     if (tmp_position == -1) {

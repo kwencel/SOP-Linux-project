@@ -97,7 +97,9 @@ bool SequentialFile::hasValidDescriptor() {
 int SequentialFile::deleteFile(const char* path) {
     if (unlink(path) == -1) {
         perror("Can't delete file");
+        return -1;
     }
+    return 0;
 }
 
 bool SequentialFile::verifyFile(char* filename) {

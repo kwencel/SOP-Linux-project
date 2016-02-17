@@ -1,5 +1,4 @@
 #include "MessageQueue.h"
-#include <iostream>
 #include <string.h>
 
 int MessageQueue::create(int flags, key_t key) {

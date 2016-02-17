@@ -134,7 +134,7 @@ void Process::freeMemoryForArguments() {
 }
 
 bool Process::verifyPid() {
-    verifyPid(pid);
+    return verifyPid(pid);
 }
 
 bool Process::verifyPid(pid_t pid) {
