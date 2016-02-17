@@ -41,7 +41,7 @@ int SharedMemory::create(size_t size, int flags, key_t key) {
 char* SharedMemory::attach() {
     int retval = selectSegmentFromVector(&allSegments, "attach", true);
     int id;
-    int size;
+    size_t size;
     if (retval < 0) {
         cout << "Please enter the size of attaching segment:" << endl;
         cin >> size;

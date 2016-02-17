@@ -9,7 +9,7 @@
 
 int Process::attach(pid_t pid) {
     if (isZombie()) {
-        waitpid(this->pid, NULL, NULL);
+        waitpid(this->pid, NULL, 0);
     }
     stringstream psCommand;
     psCommand << "ps -p " << to_string(pid);
@@ -44,7 +44,7 @@ int Process::waitFor() {
         return -1;
     }
     int retval;
-    waitpid(pid, &retval, NULL);
+    waitpid(pid, &retval, 0);
     return retval;
 }
 
@@ -54,7 +54,7 @@ int Process::changePriority(int priority) {
 
 void Process::runExecutable(string command) {
     if (isZombie()) {
-        waitpid(pid, NULL, NULL);
+        waitpid(pid, NULL, 0);
     }
     freeMemoryForArguments();
     argv = filterArguments(command, ' ');
@@ -82,7 +82,7 @@ int Process::getCommandReturnCode(string command, bool hideOutput) {
         perror("Can't run the process and capture the output");
         exit(-1);
     } else {
-        waitpid(pid, &retval, NULL);
+        waitpid(pid, &retval, 0);
     }
     return WEXITSTATUS(retval);
 }
@@ -153,7 +153,7 @@ void Process::listProcesses() {
     if (pid == 0) {
         execvp(argv[0], argv);
     } else {
-        waitpid(pid, NULL, NULL);
+        waitpid(pid, NULL, 0);
     }
 }
 

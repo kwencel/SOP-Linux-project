@@ -3,6 +3,7 @@
 #include "SeekableFile.h"
 #include "Process.h"
 #include "SharedMemory.h"
+#include "Semaphore.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ int main() {
     SeekableFile seekableFile;
     Process process;
     SharedMemory sharedMemory;
+    Semaphore semaphore;
 
     char input;
     bool goback = false;
@@ -421,7 +423,97 @@ int main() {
                             break;
                         }
                         case '2': {
-
+                            bool goback = false;
+                            while (!goback) {
+                                cout << endl;
+                                cout << "1: Create a semaphore set" << endl;
+                                cout << "2: Attach a previously created semaphore set" << endl;
+                                cout << "3: Remove a semaphore set" << endl;
+                                cout << "4: Perform P() (lock) operation" << endl;
+                                cout << "5: Perform V() (unlock) operation" << endl;
+                                cout << "6: Set value of a semaphore" << endl;
+                                cout << "7: Show ID of the semaphore set" << endl;
+                                cout << "8. Show number of semaphores in set" << endl;
+                                cout << "b: Go back to previous menu" << endl;
+                                cout << "q: Quit" << endl;
+                                cin >> input;
+                                switch (input) {
+                                    case '1': {
+                                        cout << endl;
+                                        cout << "Please enter the number of semaphores to create:" << endl;
+                                        int amount;
+                                        cin >> amount;
+                                        semaphore.create(amount);
+                                        break;
+                                    }
+                                    case '2': {
+                                        cout << endl;
+                                        cout << "Please enter the ID of the semaphore set you want to attach:" << endl;
+                                        int id;
+                                        cin >> id;
+                                        cout << "Please enter the number of semaphores in the set" << endl;
+                                        int amount;
+                                        cin >> amount;
+                                        semaphore.attach(id, amount);
+                                        break;
+                                    }
+                                    case '3': {
+                                        cout << endl;
+                                        semaphore.remove();
+                                        break;
+                                    }
+                                    case '4': {
+                                        cout << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        unsigned short which;
+                                        cin >> which;
+                                        cout << "Please enter how much do you want to decrement semaphore's value:" << endl;
+                                        short amount;
+                                        cin >> amount;
+                                        semaphore.P(which, amount);
+                                        break;
+                                    }
+                                    case '5': {
+                                        cout << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        unsigned short which;
+                                        cin >> which;
+                                        cout << "Please enter how much do you want to increment semaphore's value:" << endl;
+                                        short amount;
+                                        cin >> amount;
+                                        semaphore.V(which, amount);
+                                        break;
+                                    }
+                                    case '6': {
+                                        cout << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        unsigned short which;
+                                        cin >> which;
+                                        cout << "Please enter the new semaphore's value:" << endl;
+                                        short amount;
+                                        cin >> amount;
+                                        semaphore.set(which, amount);
+                                        break;
+                                    }
+                                    case '7': {
+                                        cout << endl;
+                                        cout << "Semaphore set ID: " << semaphore.getID() << endl;
+                                        break;
+                                    }
+                                    case '8': {
+                                        cout << endl;
+                                        cout << "Semaphores amount: " << semaphore.getAmount() << endl;
+                                        break;
+                                    }
+                                    case 'b': {
+                                        goback = true;
+                                        break;
+                                    }
+                                    case 'q': {
+                                        exit(0);
+                                    }
+                                }
+                            }
                             break;
                         }
                         case '3': {
