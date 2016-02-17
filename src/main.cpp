@@ -2,6 +2,7 @@
 #include "SequentialFile.h"
 #include "SeekableFile.h"
 #include "Process.h"
+#include "SharedMemory.h"
 
 using namespace std;
 
@@ -10,6 +11,7 @@ int main() {
     SequentialFile sequentialFile;
     SeekableFile seekableFile;
     Process process;
+    SharedMemory sharedMemory;
 
     char input;
     bool goback = false;
@@ -327,6 +329,103 @@ int main() {
                                 }
                                 cout << endl;
                             }
+                            break;
+                        }
+                        case 'b': {
+                            goback = true;
+                            break;
+                        }
+                        case 'q': {
+                            exit(0);
+                        }
+                    }
+                }
+                break;
+            }
+            case '3': {
+                goback = false;
+                while (!goback) {
+                    cout << endl;
+                    cout << "1: Shared memory" << endl;
+                    cout << "2: Semaphores" << endl;
+                    cout << "3: Message queues" << endl;
+                    cout << "b: Go back to previous menu" << endl;
+                    cout << "q: Quit" << endl;
+                    cin >> input;
+                    switch (input) {
+                        case '1': { // SHARED MEMORY
+                            bool goback = false;
+                            while (!goback) {
+                                cout << endl;
+                                cout << "1: Create shared memory segment" << endl;
+                                cout << "2: Delete shared memory segment" << endl;
+                                cout << "3: Attach shared memory segment" << endl;
+                                cout << "4: Detach shared memory segment" << endl;
+                                cout << "5: Read from shared memory segment" << endl;
+                                cout << "6: Write to shared memory segment" << endl;
+                                cout << "7: List all created and attached segments" << endl;
+                                cout << "b: Go back to previous menu" << endl;
+                                cout << "q: Quit" << endl;
+                                cin >> input;
+                                switch (input) {
+                                    case '1': {
+                                        cout << endl;
+                                        cout << "Please enter how many chars (bytes) should the segment store:" << endl;
+                                        size_t size;
+                                        cin >> size;
+                                        sharedMemory.create(size);
+                                        break;
+                                    }
+                                    case '2': {
+                                        cout << endl;
+                                        sharedMemory.remove();
+                                        break;
+                                    }
+                                    case '3': {
+                                        cout << endl;
+                                        sharedMemory.attach();
+                                        break;
+                                    }
+                                    case '4': {
+                                        cout << endl;
+                                        sharedMemory.detach();
+                                        break;
+                                    }
+                                    case '5': {
+                                        cout << endl;
+                                        sharedMemory.read();
+                                        break;
+                                    }
+                                    case '6': {
+                                        cout << endl;
+                                        cout << "Please enter the text to put into the shared memory segment" << endl;
+                                        string text;
+                                        cin >> text;
+                                        sharedMemory.write(text);
+                                        break;
+                                    }
+                                    case '7': {
+                                        cout << endl;
+                                        sharedMemory.viewSegmentList();
+                                        break;
+                                    }
+                                    case 'b': {
+                                        goback = true;
+                                        break;
+                                    }
+                                    case 'q': {
+                                        exit(0);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        case '2': {
+
+                            break;
+                        }
+                        case '3': {
+
                             break;
                         }
                         case 'b': {
