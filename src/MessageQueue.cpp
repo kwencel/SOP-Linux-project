@@ -27,8 +27,8 @@ int MessageQueue::remove() {
         perror("Can't remove the message queue");
         return -1;
     }
-    id = -1;
     cout << "Successfully removed a semaphore set with ID " << id << endl;
+    id = -1;
     return 0;
 }
 
