@@ -35,7 +35,7 @@ int MessageQueue::remove() {
 int MessageQueue::send(string text, long type) {
     buf.mtype = type;
     strcpy(buf.mtext, text.c_str());
-    if (msgsnd(id, &buf, sizeof(buf)-sizeof(long), 0) == -1) {
+    if (msgsnd(id, &buf, sizeof(buf) - sizeof(long), 0) == -1) {
         perror("Can't send the message");
         return -1;
     }
@@ -45,7 +45,7 @@ int MessageQueue::send(string text, long type) {
 }
 
 int MessageQueue::receive(long type) {
-    if (msgrcv(id, &buf, sizeof(buf)-sizeof(long), type,  0) == -1) {
+    if (msgrcv(id, &buf, sizeof(buf) - sizeof(long), type, 0) == -1) {
         perror("Can't receive the message");
         return -1;
     }

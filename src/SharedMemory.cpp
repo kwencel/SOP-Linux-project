@@ -50,12 +50,12 @@ char* SharedMemory::attach() {
         id = allSegments[retval].id;
     }
     char* ptr = (char*) shmat(id, NULL, 0);
-    if ((intptr_t)ptr == -1) {
+    if ((intptr_t) ptr == -1) {
         perror("Can't attach the shared memory segment");
         return nullptr;
     }
     if (retval < 0) {
-        Segment newSegment {id, size, ptr};
+        Segment newSegment{id, size, ptr};
         allSegments.push_back(newSegment);
         attachedSegments.push_back(newSegment);
     } else {
@@ -94,7 +94,7 @@ int SharedMemory::remove() {
     }
     // Determine if segment is currently attached (using lambda expression)
     // Remove the segment from attached vector if it was found there
-    auto it = remove_if(attachedSegments.begin(), attachedSegments.end(), [id](Segment& seg){ return seg.id == id; });
+    auto it = remove_if(attachedSegments.begin(), attachedSegments.end(), [id](Segment& seg) { return seg.id == id; });
     attachedSegments.erase(it, attachedSegments.end());
     // Remove the segment from the main vector
     allSegments.erase(allSegments.begin() + retval);

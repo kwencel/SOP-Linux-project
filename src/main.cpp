@@ -29,6 +29,7 @@ int main() {
         cin >> input;
         switch (input) {
             case '1': { // FILE OPERATIONS
+                goback = false;
                 while (!goback) {
                     cout << endl;
                     cout << "1: Sequential access" << endl;
@@ -329,7 +330,7 @@ int main() {
                                 if (!process.verifyPid()) {
                                     cout << " (dead)";
                                 } else if (process.isZombie()) {
-                                    cout <<" (zombie)";
+                                    cout << " (zombie)";
                                 }
                                 cout << endl;
                             }
@@ -466,7 +467,8 @@ int main() {
                                     }
                                     case '4': {
                                         cout << endl;
-                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" <<
+                                        semaphore.getAmount() - 1 << "):" << endl;
                                         unsigned short which;
                                         cin >> which;
                                         cout << "Please enter how much do you want to decrement semaphore's value:" << endl;
@@ -477,7 +479,8 @@ int main() {
                                     }
                                     case '5': {
                                         cout << endl;
-                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" <<
+                                        semaphore.getAmount() - 1 << "):" << endl;
                                         unsigned short which;
                                         cin >> which;
                                         cout << "Please enter how much do you want to increment semaphore's value:" << endl;
@@ -488,7 +491,8 @@ int main() {
                                     }
                                     case '6': {
                                         cout << endl;
-                                        cout << "Please enter which semaphore do you want to operate on (0-" << semaphore.getAmount() - 1 << "):" << endl;
+                                        cout << "Please enter which semaphore do you want to operate on (0-" <<
+                                        semaphore.getAmount() - 1 << "):" << endl;
                                         unsigned short which;
                                         cin >> which;
                                         cout << "Please enter the new semaphore's value:" << endl;

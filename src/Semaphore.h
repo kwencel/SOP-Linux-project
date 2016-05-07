@@ -12,7 +12,7 @@ private:
     struct sembuf buf;
 
 public:
-    int create(int amount , int flags = 0600 | IPC_CREAT, key_t key = IPC_PRIVATE);
+    int create(int amount, int flags = 0600 | IPC_CREAT, key_t key = IPC_PRIVATE);
 
     int attach(int id, int amount);
 
@@ -20,7 +20,7 @@ public:
 
     int P(unsigned short which, short amount);
 
-    int V(unsigned short which, short amount );
+    int V(unsigned short which, short amount);
 
     int set(unsigned short which, short amount);
 

@@ -14,6 +14,7 @@ public:
     int id = -1;
     size_t size = 0;
     char* ptr = nullptr;
+
     bool operator==(const Segment& other) { return this->id == other.id; }
 
     Segment(int id, size_t size, char* ptr) : id(id), size(size), ptr(ptr) { }
