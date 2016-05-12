@@ -11,8 +11,8 @@ A C++ application providing an easy, object-oriented interface to Linux kernel f
 ```
 git clone https://github.com/daktyl/SOP-Linux-project.git
 cd SOP-Linux-project/
-$ cmake .
-$ make
+cmake .
+make
 ```
 
 # How to use the program?
