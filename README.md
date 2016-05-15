@@ -16,7 +16,7 @@ make
 ```
 
 # How to use the program?
-Use numeric keys to navigate the menu. You need to choose an option and confirm your selection by pressing ENTER.
+Use the numeric keys to navigate the menu. You need to choose an option and confirm your selection by pressing ENTER.
 For a very detailed explanation of every function take a look at *Readme.txt* (written in Polish)
 
 **WARNING** The program does not automatically clean up created shared memory segments, message queues and semaphores
