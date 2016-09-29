@@ -1,10 +1,10 @@
 Opis klas:
-SequentialFile 	- reprezentuje plik o dostępie sekwencyjnym (łącze nazwane)
-SeekableFile 	- reprezentuje plik o dostępie bezpośrednim (plik zwykły). Dziedziczy po SeekableFile
-Process 		- reprezentuje proces
-SharedMemory	- reprezentuje zbiór segmentów pamięci współdzielonej
-Semaphore		- reprezentuje pojedynczy zbiór (set) semaforów
-MessageQueue	- reprezentuje pojedynczą kolejkę komunikatów
+SequentialFile  - Reprezentuje plik o dostępie sekwencyjnym (łącze nazwane).
+SeekableFile    - Reprezentuje plik o dostępie bezpośrednim (plik zwykły). Dziedziczy po SeekableFile.
+Process         - Reprezentuje proces.
+SharedMemory    - Reprezentuje zbiór segmentów pamięci współdzielonej.
+Semaphore       - Reprezentuje pojedynczy zbiór (set) semaforów.
+MessageQueue    - Reprezentuje pojedynczą kolejkę komunikatów.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Na początek krótki opis koncepcji projektu:
@@ -42,29 +42,29 @@ Wybór pliku sekwencyjnego uniemożliwia użycie funkcji "7: Seek file" oraz fun
 a nie plik zwykły jak ma to miejsce w przypadku pliku o dostępie bezpośrednim.
 
 1) Sequential access
-1: Create file 		- Tworzy łącze nazwane o danej nazwie
-2: Delete file 		- Usuwa plik o danej nazwie
-3: Open file 		- Otwiera (podpina, ładuje) plik o danej nazwie i w danym trybie.
-4: Close file 		- Zamyka plik
-5: Read from file 	- Czyta n bajtów z załadowanego pliku
-6: Write to file 	- Zapisuje podany tekst do załadowanego pliku
+1: Create file          - Tworzy łącze nazwane o danej nazwie.
+2: Delete file          - Usuwa plik o danej nazwie.
+3: Open file            - Otwiera (podpina, ładuje) plik o danej nazwie i w danym trybie.
+4: Close file           - Zamyka plik.
+5: Read from file       - Czyta n bajtów z załadowanego pliku.
+6: Write to file        - Zapisuje podany tekst do załadowanego pliku.
 
 2) Direct  access
 Ta sama funkcjonalność co dla plików o dostępie sekwencyjnym poszerzona o możliwość
 przesuwania wskaźnika pozycji "7) Seek file" oraz funkcja "1. Create file" tworzy plik zwykły, a nie łącze nazwane
 
 ----------------------------------------- Process operations -----------------------------------------------------------------------------------------------------------
-1: Attach to process 					  - Podpina istniejący w systemie proces o podanym PID. Funkcja zwróci błąd przy próbie podpięcia procesu
-											należącego do innego użytkownika (chyba że program zostanie uruchomiony jako root)
-2: Create a child process 				  - Tworzy proces potomka, a następnie podmienia jego obraz na program o podanej nazwie i podpina go)
-3: Send a signal to process 			  - Wysyła sygnał o podanym numerze do podpiętego procesu
-4: Change process priority 				  - Zmienia priorytet podpiętego procesu. Można tylko zmniejszać priorytet (zwiększać wartość nice) własnych procesów, chyba że
-										    Uruchamia się program jako root, wtedy można zmieniać priorytety dowolnych procesów, a także zwiększać im priorytety.
-5: Wait for process 					  - Czeka na zakończenie procesu potomka. Jeżeli podpięty proces nie jest potomkiem to funkcja zwróci błąd i wypisze odpowiedni
-							 			    komunikat
-6: List all your running processes 		  - Tworzy potomka i podmienia jego obraz na program "ps", który wyświetla listę procesów należących do użytkownika
-uruchamiającego Program
-7: Show PID of currently assigned process - Pokazuje PID aktualnie podpiętego procesu.
+1: Attach to process                         - Podpina istniejący w systemie proces o podanym PID. Funkcja zwróci błąd przy próbie podpięcia procesu należącego
+                                               do innego użytkownika (chyba że program zostanie uruchomiony jako root).
+2: Create a child process                    - Tworzy proces potomka, a następnie podmienia jego obraz na program o podanej nazwie i podpina go).
+3: Send a signal to process                  - Wysyła sygnał o podanym numerze do podpiętego procesu.
+4: Change process priority                   - Zmienia priorytet podpiętego procesu. Można tylko zmniejszać priorytet (zwiększać wartość nice) własnych procesów, chyba że
+                                               uruchamia się program jako root, wtedy można zmieniać priorytety dowolnych procesów, a także zwiększać im priorytety.
+5: Wait for process                          - Czeka na zakończenie procesu potomka. Jeżeli podpięty proces nie jest potomkiem to funkcja zwróci błąd i wypisze odpowiedni
+                                               komunikat.
+6: List all your running processes           - Tworzy potomka i podmienia jego obraz na program "ps", który wyświetla listę procesów należących do użytkownika
+                                               uruchamiającego Program.
+7: Show PID of currently assigned process    - Pokazuje PID aktualnie podpiętego procesu.
 
 Zarówno funkcja "Attach" jak i "Create" w przypadku, gdy ostatnio podpiętym procesem był potomek Programu, a następnie został zakończony i nie została
 na nim wywołana operacja "Wait for process" (zatem proces jest zombie) wywołuje funkcję "Wait for process" na tym procesie przed właściwym dla swojej
@@ -83,38 +83,38 @@ bądź stworzyć potmka, PID aktualnego procesu zostanie zapomniany. Mozna go oc
 --------------------------------------------- IPC operations -----------------------------------------------------------------------------------------------------------
 1) Shared memory
 
-1: Create shared memory segment 			- Tworzy segment pamięci współdzielonej i umieszcza informacje o nim w wektorze allSegments
-2: Delete shared memory segment 			- Usuwa wybrany z listy segment pamięci współdzielonej i usuwa informacje o nim z wektora allSegments oraz attachedSegments,
-									  		  jeśli był podpięty. Zezwala także na podanie ID segmentu, którego nie ma na liście.
-3: Attach shared memory segment 			- Podpina wybrany z listy segment pamięci współdzielonej. Zezwala także na podanie ID segmentu, którego nie ma na liście.
-4: Detach shared memory segment 			- Odpina wybrany z listy segment pamięci współdzielonej.
-5: Read from shared memory segment  		- Prosi użytkownika o wybór segmentu z listy aktualnie podpiętych segmentów i odczytuje z niego podaną przez użytkownika
-											  liczbę bajtów
-6: Write to shared memory segment  			- Prosi użytkownika o wybór segmentu z listy aktualnie podpiętych segmentów i zapisuje do niego podaną przez użytkownika
-											  liczbę bajtów
-7: List all created and attached segments 	- Wyświetla zawartość wektora z informacjami o utworzonych i podpiętych segmentach
+1: Create shared memory segment              - Tworzy segment pamięci współdzielonej i umieszcza informacje o nim w wektorze allSegments.
+2: Delete shared memory segment              - Usuwa wybrany z listy segment pamięci współdzielonej i usuwa informacje o nim z wektora allSegments oraz attachedSegments,
+                                               jeśli był podpięty. Zezwala także na podanie ID segmentu, którego nie ma na liście.
+3: Attach shared memory segment              - Podpina wybrany z listy segment pamięci współdzielonej. Zezwala także na podanie ID segmentu, którego nie ma na liście.
+4: Detach shared memory segment              - Odpina wybrany z listy segment pamięci współdzielonej.
+5: Read from shared memory segment           - Prosi użytkownika o wybór segmentu z listy aktualnie podpiętych segmentów i odczytuje z niego podaną przez użytkownika
+                                               liczbę bajtów.
+6: Write to shared memory segment            - Prosi użytkownika o wybór segmentu z listy aktualnie podpiętych segmentów i zapisuje do niego podaną przez użytkownika
+                                               liczbę bajtów.
+7: List all created and attached segments    - Wyświetla zawartość wektora z informacjami o utworzonych i podpiętych segmentach.
 
 2) Semaphores
 
-1: Create a semaphore set 					 - Tworzy zbiór (set) semaforów o podanej przez użytkownika liczbie semaforów
-2: Attach a previously created semaphore set - Podpina zbiór semaforów o podanym przez użytkownika ID oraz liczbie semaforów w zbiorze
-3: Remove a semaphore set 					 - Usuwa aktualnie podpięty zbiór semaforów
-4: Perform P() (lock) operations 			 - Zmniejsza wartość m-tego semafora o n ('m' i 'n' podawane przez użytkownika) i wstrzymuje proces Programu,
-										  	   jeśli w wyniku wykonania tej operacji wartość semaphore spadła poniżej zera.
-5: Perform V() (unlock) operation 			 - Zwiększa wartość m-tego semafora o n ('m' i 'n' podawane przez użytkownika) i wznawia proces Programu,
-											   jeśli w wyniku wykonania tej operacji wartość semaphore stała się liczbą nieujemną.
-6: Set value of semaphore 					 - Ustawia wartość m-tego semafora na wartość n ('m' i 'n' podawane przez użytkownika)
-7: Show ID of the semaphore set  			 - Pokazuje ID aktualnie podpiętego setu semaforów
-8: Show number of the semaphores in set 	 - Pokazuje ilość semaforów w aktualnie podpiętym zbiorze
+1: Create a semaphore set                    - Tworzy zbiór (set) semaforów o podanej przez użytkownika liczbie semaforów.
+2: Attach a previously created semaphore set - Podpina zbiór semaforów o podanym przez użytkownika ID oraz liczbie semaforów w zbiorze.
+3: Remove a semaphore set                    - Usuwa aktualnie podpięty zbiór semaforów.
+4: Perform P() (lock) operations             - Zmniejsza wartość m-tego semafora o n ('m' i 'n' podawane przez użytkownika) i wstrzymuje proces Programu,
+                                               jeśli w wyniku wykonania tej operacji wartość semaphore spadła poniżej zera.
+5: Perform V() (unlock) operation            - Zwiększa wartość m-tego semafora o n ('m' i 'n' podawane przez użytkownika) i wznawia proces Programu,
+                                               jeśli w wyniku wykonania tej operacji wartość semaphore stała się liczbą nieujemną.
+6: Set value of semaphore                    - Ustawia wartość m-tego semafora na wartość n ('m' i 'n' podawane przez użytkownika).
+7: Show ID of the semaphore set              - Pokazuje ID aktualnie podpiętego setu semaforów.
+8: Show number of the semaphores in set      - Pokazuje ilość semaforów w aktualnie podpiętym zbiorze.
 
 3) Message queues
 
-1: Create a message queue 					 - Tworzy kolejkę komunikatów
-2: Attach a previously created message queue - Podpina kolejkę komunikatów o danym ID
-3: Remove a message queue					 - Usuwa aktualnie podpiętą kolejkę komunnikatów
-4: Receive a message						 - Odbiera wiadomość n-tego typu z aktualnie podpiętej kolejki komunikatów ('n' podawane przez użytkownika)
-5: Send a message							 - Wysyła wiadomość n-tego typu o podanej treści do aktualnie podpiętej kolejki komunikatów ('n' oraz treść
-											   komunikatu podawana przez użytkownika)
-6: Get ID of the message queue 				 - Wyświetla ID aktualnie podpiętej kolejki komunikatów
+1: Create a message queue                     - Tworzy kolejkę komunikatów.
+2: Attach a previously created message queue  - Podpina kolejkę komunikatów o danym ID.
+3: Remove a message queue                     - Usuwa aktualnie podpiętą kolejkę komunnikatów.
+4: Receive a message                          - Odbiera wiadomość n-tego typu z aktualnie podpiętej kolejki komunikatów ('n' podawane przez użytkownika).
+5: Send a message                             - Wysyła wiadomość n-tego typu o podanej treści do aktualnie podpiętej kolejki komunikatów ('n' oraz treść
+                                                komunikatu podawana przez użytkownika).
+6: Get ID of the message queue                - Wyświetla ID aktualnie podpiętej kolejki komunikatów.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
