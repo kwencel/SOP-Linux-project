@@ -1,6 +1,6 @@
 Opis klas:
 SequentialFile  - Reprezentuje plik o dostępie sekwencyjnym (łącze nazwane).
-SeekableFile    - Reprezentuje plik o dostępie bezpośrednim (plik zwykły). Dziedziczy po SeekableFile.
+SeekableFile    - Reprezentuje plik o dostępie bezpośrednim (plik zwykły). Dziedziczy po SequentialFile.
 Process         - Reprezentuje proces.
 SharedMemory    - Reprezentuje zbiór segmentów pamięci współdzielonej.
 Semaphore       - Reprezentuje pojedynczy zbiór (set) semaforów.
